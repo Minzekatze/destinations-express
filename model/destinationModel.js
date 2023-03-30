@@ -147,6 +147,27 @@ const deleteCountry = async (req, res) => {
   res.json(country);
 };
 
+const createCountry = async (req, res) => {
+  try {
+    res.render("index");
+    console.log(req.body);
+    const { name, alpha_two_code, alpha_three_code, visited } = req.body;
+    const myQuery =
+      "INSERT INTO destination (name, alpha_two_code, alpha_three_code, visited) VALUES ($1, $2, $3, $4) RETURNING *";
+    const {
+      rows: [desti],
+    } = await pool.query(myQuery, [
+      name,
+      alpha_two_code,
+      alpha_three_code,
+      visited,
+    ]);
+  } catch (error) {
+    console.log(error.message);
+    res.json({ error: error.message });
+  }
+};
+
 // const validating = async (one, two, three) => {
 //   if (!one || !two || !three) return "missing data";
 
@@ -181,4 +202,5 @@ export {
   getCountryByCode,
   putCountry,
   deleteCountry,
+  createCountry,
 };
