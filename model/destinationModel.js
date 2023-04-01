@@ -147,9 +147,17 @@ const deleteCountry = async (req, res) => {
   res.json(country);
 };
 
-const createCountry = async (req, res) => {
+const getCreateCountry = async (req, res) => {
   try {
     res.render("index");
+  } catch (error) {
+    console.log(error.message);
+    res.json({ error: error.message });
+  }
+};
+
+const postCreateCountry = async (req, res) => {
+  try {
     console.log(req.body);
     const { name, alpha_two_code, alpha_three_code, visited } = req.body;
     const myQuery =
@@ -202,5 +210,6 @@ export {
   getCountryByCode,
   putCountry,
   deleteCountry,
-  createCountry,
+  getCreateCountry,
+  postCreateCountry,
 };

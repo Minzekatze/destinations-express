@@ -5,7 +5,8 @@ import {
   postCountry,
   putCountry,
   deleteCountry,
-  createCountry,
+  getCreateCountry,
+  postCreateCountry,
 } from "../model/destinationModel.js";
 
 const deRoutes = Router();
@@ -16,6 +17,6 @@ deRoutes
   .get(getCountryByCode)
   .put(putCountry)
   .delete(deleteCountry);
-deRoutes.route("/create").post(createCountry);
+deRoutes.route("/create").get(getCreateCountry).post(postCreateCountry);
 
 export default deRoutes;
