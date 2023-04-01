@@ -8,15 +8,27 @@ import {
   getCreateCountry,
   postCreateCountry,
 } from "../model/destinationModel.js";
+import {
+  checkEmpty,
+  validInput,
+  duplicatedEntry,
+  findCountry,
+} from "../middleware/destinationMiddleware.js";
 
 const deRoutes = Router();
 
-deRoutes.route("/").get(getCountries).post(postCountry);
+deRoutes
+  .route("/")
+  .get(getCountries)
+  .post(checkEmpty, validInput, duplicatedEntry, postCountry);
+deRoutes
+  .route("/create")
+  .get(getCreateCountry)
+  .post(checkEmpty, validInput, duplicatedEntry, postCreateCountry);
 deRoutes
   .route("/:code")
-  .get(getCountryByCode)
-  .put(putCountry)
-  .delete(deleteCountry);
-deRoutes.route("/create").get(getCreateCountry).post(postCreateCountry);
+  .get(findCountry, getCountryByCode)
+  .put(findCountry, checkEmpty, validInput, duplicatedEntry, putCountry)
+  .delete(findCountry, deleteCountry);
 
 export default deRoutes;

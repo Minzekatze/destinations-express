@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import deRoutes from "./controller/destinationRoutes.js";
 import bodyParser from "body-parser";
+import { errorHandler } from "./middleware/destinationMiddleware.js";
 
 const app = express();
 const port = process.env.PORT || 8000;

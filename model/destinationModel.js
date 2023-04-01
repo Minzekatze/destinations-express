@@ -1,5 +1,4 @@
 import pool from "../db/pg.js";
-import validator from "validator";
 
 const getCountries = async (req, res) => {
   try {
@@ -32,42 +31,6 @@ const getCountries = async (req, res) => {
 const postCountry = async (req, res) => {
   try {
     const { name, alpha_two_code, alpha_three_code, visited } = req.body;
-    // validating(name, alpha_two_code, alpha_three_code)
-    //   .then((response) => {
-    //     if (response) return res.json({ error: response });
-    //   })
-    //   .catch((error) => console.log(error));
-
-    if (!name || !alpha_two_code || !alpha_three_code || !visited)
-      return res.json({ error: "missing data" });
-
-    const validCodeTwo = validator.isLength(alpha_two_code, { min: 2, max: 2 });
-    const validCodeThree = validator.isLength(alpha_three_code, {
-      min: 3,
-      max: 3,
-    });
-
-    if (!validCodeTwo || !validCodeThree)
-      return res.json({ error: "invalid value" });
-
-    const { rows: answerN } = await pool.query(
-      "SELECT COUNT(name) from destination WHERE name = $1",
-      [name]
-    );
-    const { rows: answerTwo } = await pool.query(
-      "SELECT COUNT(alpha_two_code) from destination WHERE alpha_two_code = $1",
-      [alpha_two_code]
-    );
-    const { rows: answerThre } = await pool.query(
-      "SELECT COUNT(alpha_three_code) from destination WHERE alpha_three_code = $1",
-      [alpha_three_code]
-    );
-    if (
-      answerN[0].count > 0 ||
-      answerTwo[0].count > 0 ||
-      answerThre[0].count > 0
-    )
-      return res.json({ error: "item already exists" });
     const myQuery =
       "INSERT INTO destination (name, alpha_two_code, alpha_three_code, visited) VALUES ($1, $2, $3, $4) RETURNING *";
     const {
@@ -91,8 +54,6 @@ const getCountryByCode = async (req, res) => {
     const myQuery =
       "SELECT * FROM destination WHERE alpha_two_code = $1 OR alpha_three_code = $1";
     const { rows: country } = await pool.query(myQuery, [code.toUpperCase()]);
-    if (country.length === 0)
-      return res.json({ error: "no matching item found" });
     res.json(country);
   } catch (error) {
     console.log(error.message);
@@ -103,17 +64,6 @@ const putCountry = async (req, res) => {
   try {
     const { code } = req.params;
     const { name, alpha_two_code, alpha_three_code, visited } = req.body;
-    if (!name || !alpha_two_code || !alpha_three_code || !visited)
-      return res.json({ error: "missing values" });
-
-    const validCodeTwo = validator.isLength(alpha_two_code, { min: 2, max: 2 });
-    const validCodeThree = validator.isLength(alpha_three_code, {
-      min: 3,
-      max: 3,
-    });
-    if (!validCodeTwo || !validCodeThree)
-      return res.json({ error: "invalid value" });
-
     const myQuery =
       "UPDATE destination SET name = $1, alpha_two_code = $2, alpha_three_code = $3, visited = $4 WHERE alpha_two_code = $5 OR alpha_three_code = $5 RETURNING *";
     const {
@@ -126,7 +76,6 @@ const putCountry = async (req, res) => {
       code.toUpperCase(),
     ]);
     console.log(country);
-    if (!country) return res.json({ error: "no matching item found" });
     res.json(country);
   } catch (error) {
     console.log(error.message);
@@ -142,8 +91,6 @@ const deleteCountry = async (req, res) => {
   const myQuery2 =
     "UPDATE destination SET visited = true WHERE alpha_two_code = $1 OR alpha_three_code = $1 RETURNING *";
   const { rows: country } = await pool.query(myQuery2, [code.toUpperCase()]);
-  if (country.length === 0)
-    return res.json({ error: "no matching item found" });
   res.json(country);
 };
 
@@ -170,39 +117,17 @@ const postCreateCountry = async (req, res) => {
       alpha_three_code,
       visited,
     ]);
+    res.render("index2", {
+      country: name,
+      code2: alpha_two_code,
+      code3: alpha_three_code,
+      bo: visited,
+    });
   } catch (error) {
     console.log(error.message);
     res.json({ error: error.message });
   }
 };
-
-// const validating = async (one, two, three) => {
-//   if (!one || !two || !three) return "missing data";
-
-//   const validCodeTwo = validator.isLength(two, { min: 2, max: 2 });
-//   const validCodeThree = validator.isLength(three, {
-//     min: 3,
-//     max: 3,
-//   });
-//   if (!validCodeTwo || !validCodeThree) return "invalid value";
-
-//   const { rows: answerN } = await pool.query(
-//     "SELECT COUNT(name) from destination WHERE name = $1",
-//     [one]
-//   );
-//   const { rows: answerTwo } = await pool.query(
-//     "SELECT COUNT(alpha_two_code) from destination WHERE name = $1",
-//     [two]
-//   );
-//   const { rows: answerThre } = await pool.query(
-//     "SELECT COUNT(alpha_three_code) from destination WHERE name = $1",
-//     [three]
-//   );
-//   if (answerN[0].count > 0 || answerTwo[0].count > 0 || answerThre[0].count > 0)
-//     return "item already exists";
-
-//   return false;
-// };
 
 export {
   getCountries,
