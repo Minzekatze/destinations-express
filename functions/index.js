@@ -19,7 +19,7 @@ app.use(
 );
 app.set("view engine", "ejs");
 
-app.use("/.netlify/functions/index", deRoutes);
+app.use("/.netlify/functions/index", () => deRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
