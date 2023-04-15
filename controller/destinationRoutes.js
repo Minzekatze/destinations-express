@@ -18,7 +18,7 @@ import {
 const deRoutes = Router();
 
 deRoutes
-  .route("/")
+  .route("/get")
   .get(getCountries)
   .post(checkEmpty, validInput, duplicatedEntry, postCountry);
 deRoutes
