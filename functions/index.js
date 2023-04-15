@@ -1,7 +1,7 @@
 import express from "express";
 import serverless from "serverless-http";
 import cors from "cors";
-import deRoutes from "../controller/destinationRoutes.js";
+import deRoutes from "./controller/destinationRoutes.js";
 import bodyParser from "body-parser";
 
 const app = express();
