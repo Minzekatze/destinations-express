@@ -5,7 +5,7 @@ import deRoutes from "./controller/destinationRoutes.js";
 import bodyParser from "body-parser";
 
 const app = express();
-const port = process.env.PORT || 8000;
+const port = 8000;
 
 app.use(cors());
 app.use(express.json());
