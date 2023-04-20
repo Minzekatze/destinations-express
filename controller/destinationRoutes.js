@@ -13,6 +13,7 @@ import {
   validInput,
   duplicatedEntry,
   findCountry,
+  realCode,
 } from "../middleware/destinationMiddleware.js";
 
 const deRoutes = Router();
@@ -20,15 +21,22 @@ const deRoutes = Router();
 deRoutes
   .route("/")
   .get(getCountries)
-  .post(checkEmpty, validInput, duplicatedEntry, postCountry);
+  .post(checkEmpty, validInput, realCode, duplicatedEntry, postCountry);
 deRoutes
   .route("/create")
   .get(getCreateCountry)
-  .post(checkEmpty, validInput, duplicatedEntry, postCreateCountry);
+  .post(checkEmpty, validInput, realCode, duplicatedEntry, postCreateCountry);
 deRoutes
   .route("/:code")
   .get(findCountry, getCountryByCode)
-  .put(findCountry, checkEmpty, validInput, duplicatedEntry, putCountry)
+  .put(
+    findCountry,
+    checkEmpty,
+    validInput,
+    realCode,
+    duplicatedEntry,
+    putCountry
+  )
   .delete(findCountry, deleteCountry);
 
 export default deRoutes;

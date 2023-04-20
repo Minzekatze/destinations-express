@@ -29,6 +29,14 @@ const validInput = (req, res, next) => {
   return next();
 };
 
+const realCode = async (req, res, next) => {
+  const { alpha_two_code, alpha_three_code } = req.body;
+  const validTwoCode = validator.isISO31661Alpha2(alpha_two_code);
+  const validThreeCode = validator.isISO31661Alpha3(alpha_three_code);
+  if (!validTwoCode || !validThreeCode) return next("invalid code");
+  return next();
+};
+
 const duplicatedEntry = async (req, res, next) => {
   const { name, alpha_two_code, alpha_three_code } = req.body;
   const { rows: answerN } = await pool.query(
@@ -53,4 +61,11 @@ const errorHandler = async (err, req, res, next) => {
   return res.status(400).json({ error: err.message });
 };
 
-export { checkEmpty, validInput, duplicatedEntry, errorHandler, findCountry };
+export {
+  checkEmpty,
+  validInput,
+  duplicatedEntry,
+  errorHandler,
+  findCountry,
+  realCode,
+};
